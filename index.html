@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anatomía Humana — Neón</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   ANATOMÍA HUMANA — NEÓN STYLESHEET  |  styles.css
+═══════════════════════════════════════════════════════ */
+
+/* ─── VARIABLES ─── */
+:root {
+  --cyan:      #00F5FF;
+  --magenta:   #FF00E5;
+  --lime:      #AAFF00;
+  --orange:    #FF6B00;
+  --violet:    #9B00FF;
+  --white:     #E2F0FF;
+  --bg:        #030608;
+  --panel:     #0C1520;
+  --panel2:    #0F1D2E;
+  --border:    rgba(0,245,255,0.1);
+  --font-d:    'Orbitron', monospace;
+  --font-b:    'Rajdhani', sans-serif;
+  --ease:      cubic-bezier(.4,0,.2,1);
+  --glow-c:    0 0 20px rgba(0,245,255,0.55),  0 0 45px rgba(0,245,255,0.2);
+  --glow-m:    0 0 20px rgba(255,0,229,0.55),  0 0 45px rgba(255,0,229,0.2);
+  --glow-l:    0 0 20px rgba(170,255,0,0.55),  0 0 45px rgba(170,255,0,0.2);
+  --glow-o:    0 0 20px rgba(255,107,0,0.55),  0 0 45px rgba(255,107,0,0.2);
+  --glow-v:    0 0 20px rgba(155,0,255,0.55),  0 0 45px rgba(155,0,255,0.2);
+}
+
+/* ─── RESET ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── CUSTOM CURSOR ─── */
+#cursor {
+  position: fixed; width: 10px; height: 10px;
+  background: var(--cyan); border-radius: 50%;
+  pointer-events: none; z-index: 99999;
+  transform: translate(-50%,-50%);
+  box-shadow: var(--glow-c);
+  mix-blend-mode: screen;
+  transition: width .2s, height .2s, background .2s;
+}
+#cursor-ring {
+  position: fixed; width: 34px; height: 34px;
+  border: 1.5px solid rgba(0,245,255,.45);
+  border-radius: 50%; pointer-events: none;
+  z-index: 99998; transform: translate(-50%,-50%);
+  transition: width .3s, height .3s, border-color .3s;
+}
+body.hov #cursor       { width:22px; height:22px; background:var(--magenta); box-shadow:var(--glow-m); }
+body.hov #cursor-ring  { width:52px; height:52px; border-color:rgba(255,0,229,.4); }
+
+/* ─── SCANLINES ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,.1) 2px, rgba(0,0,0,.1) 4px
+  );
+  pointer-events: none; z-index: 9998;
+  animation: scanMove 10s linear infinite;
+}
+@keyframes scanMove { to { background-position: 0 80px; } }
+
+/* ─── PARTICLES ─── */
+#pcv {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0; opacity: .5;
+}
+
+/* ─── LOADER ─── */
+#loader {
+  position: fixed; inset: 0; background: var(--bg);
+  z-index: 99997; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 22px;
+  transition: opacity .6s, visibility .6s;
+}
+#loader.gone { opacity: 0; visibility: hidden; }
+.ld-title {
+  font-family: var(--font-d); font-size: 1.8rem;
+  font-weight: 900; letter-spacing: 6px; color: var(--cyan);
+  text-shadow: var(--glow-c); animation: pulseGlow 1.4s ease infinite;
+}
+.ld-track {
+  width: 260px; height: 3px; background: rgba(255,255,255,.05);
+  border-radius: 3px; overflow: hidden;
+}
+.ld-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--lime));
+  border-radius: 3px; box-shadow: 0 0 10px var(--cyan);
+  transition: width .12s linear;
+}
+.ld-pct {
+  font-family: var(--font-d); font-size: .65rem;
+  letter-spacing: 4px; color: rgba(226,240,255,.35);
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; align-items: center;
+  justify-content: space-between; padding: 14px 40px;
+  background: rgba(3,6,8,.8); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  transition: padding .3s var(--ease), background .3s;
+}
+nav.scrolled { padding: 9px 40px; background: rgba(3,6,8,.95); border-bottom-color: rgba(0,245,255,.22); }
+.logo {
+  font-family: var(--font-d); font-size: 1.05rem;
+  font-weight: 900; letter-spacing: 4px;
+  color: var(--cyan); text-shadow: var(--glow-c); user-select: none;
+}
+.logo em { font-style: normal; color: var(--magenta); text-shadow: var(--glow-m); }
+
+.nav-btns { display: flex; gap: 7px; flex-wrap: wrap; }
+.nbtn {
+  padding: 7px 16px; border-radius: 4px; border: 1px solid;
+  font-family: var(--font-d); font-size: .49rem;
+  letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; background: transparent;
+  transition: all .25s ease; font-weight: 700;
+  position: relative; overflow: hidden;
+}
+.nbtn::after {
+  content: ''; position: absolute; inset: 0;
+  background: currentColor; opacity: 0; transition: opacity .2s;
+}
+.nbtn:hover::after { opacity: .08; }
+
+.nbtn-c { border-color:var(--cyan);    color:var(--cyan); }
+.nbtn-m { border-color:var(--magenta); color:var(--magenta); }
+.nbtn-l { border-color:var(--lime);    color:var(--lime); }
+.nbtn-o { border-color:var(--orange);  color:var(--orange); }
+.nbtn-v { border-color:var(--violet);  color:var(--violet); }
+.nbtn-c:hover,.nbtn-c.act { background:var(--cyan);    color:#000; box-shadow:var(--glow-c); }
+.nbtn-m:hover,.nbtn-m.act { background:var(--magenta); color:#fff; box-shadow:var(--glow-m); }
+.nbtn-l:hover,.nbtn-l.act { background:var(--lime);    color:#000; box-shadow:var(--glow-l); }
+.nbtn-o:hover,.nbtn-o.act { background:var(--orange);  color:#000; box-shadow:var(--glow-o); }
+.nbtn-v:hover,.nbtn-v.act { background:var(--violet);  color:#fff; box-shadow:var(--glow-v); }
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 100px 20px 60px;
+  position: relative; overflow: hidden;
+}
+.hero-glow {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(0,245,255,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(255,0,229,.05) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(170,255,0,.03) 0%,transparent 70%);
+  animation: bgPulse 8s ease-in-out infinite alternate;
+}
+@keyframes bgPulse { from{opacity:.7} to{opacity:1;transform:scale(1.04)} }
+
+.grid-lines {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,245,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.eyebrow {
+  font-family: var(--font-d); font-size: .58rem;
+  letter-spacing: 8px; color: var(--lime);
+  text-shadow: var(--glow-l); margin-bottom: 18px;
+  position: relative; animation: fadeUp .9s ease both;
+}
+.hero-title {
+  font-family: var(--font-d);
+  font-size: clamp(4.5rem,14vw,11rem);
+  font-weight: 900; line-height: .9;
+  position: relative; animation: fadeUp .9s .1s ease both;
+}
+.t1{color:var(--cyan);   text-shadow:0 0 40px var(--cyan),   0 0 80px var(--cyan);}
+.t2{color:var(--magenta);text-shadow:0 0 40px var(--magenta),0 0 80px var(--magenta);}
+.t3{color:var(--lime);   text-shadow:0 0 40px var(--lime),   0 0 80px var(--lime);}
+.t4{color:var(--orange); text-shadow:0 0 40px var(--orange), 0 0 80px var(--orange);}
+
+.hero-sub {
+  color: rgba(226,240,255,.55); font-size: 1.1rem;
+  font-weight: 300; max-width: 540px; line-height: 1.8;
+  margin-top: 22px; position: relative;
+  animation: fadeUp .9s .25s ease both;
+}
+.typing {
+  font-family: var(--font-d); font-size: .78rem;
+  letter-spacing: 3px; color: var(--cyan);
+  margin-top: 16px; min-height: 1.5em;
+  animation: fadeUp .9s .4s ease both;
+}
+.tcaret {
+  display: inline-block; width: 2px; height: .9em;
+  background: var(--cyan); margin-left: 2px;
+  vertical-align: middle; animation: blink .8s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.hero-imgs {
+  display: flex; gap: 12px; margin-top: 46px;
+  flex-wrap: wrap; justify-content: center;
+  position: relative; animation: fadeUp .9s .55s ease both;
+}
+.hframe {
+  width: 148px; height: 108px; border-radius: 10px;
+  overflow: hidden; border: 1px solid; position: relative;
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+.hframe:hover { transform: translateY(-8px) scale(1.06); }
+.hframe img { width:100%; height:100%; object-fit:cover; filter:saturate(1.3); display:block; }
+.hfc{border-color:rgba(0,245,255,.5);  box-shadow:0 0 16px rgba(0,245,255,.12);}
+.hfm{border-color:rgba(255,0,229,.5);  box-shadow:0 0 16px rgba(255,0,229,.12);}
+.hfl{border-color:rgba(170,255,0,.5);  box-shadow:0 0 16px rgba(170,255,0,.12);}
+.hfo{border-color:rgba(255,107,0,.5);  box-shadow:0 0 16px rgba(255,107,0,.12);}
+.hfv{border-color:rgba(155,0,255,.5);  box-shadow:0 0 16px rgba(155,0,255,.12);}
+.hfc:hover{box-shadow:var(--glow-c);}
+.hfm:hover{box-shadow:var(--glow-m);}
+.hfl:hover{box-shadow:var(--glow-l);}
+.hfo:hover{box-shadow:var(--glow-o);}
+.hfv:hover{box-shadow:var(--glow-v);}
+.flabel {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:18px 4px 5px;
+  background:linear-gradient(transparent,rgba(0,0,0,.88));
+  font-family:var(--font-d); font-size:.43rem;
+  letter-spacing:2px; text-align:center; text-transform:uppercase;
+}
+.scroll-hint {
+  position: absolute; bottom: 28px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column;
+  align-items: center; gap: 7px;
+  color: rgba(226,240,255,.2); font-family: var(--font-d);
+  font-size: .48rem; letter-spacing: 4px; text-transform: uppercase;
+  animation: fadeUp .9s 1.3s ease both;
+}
+.sarrow {
+  width: 16px; height: 16px;
+  border-right: 1.5px solid rgba(0,245,255,.3);
+  border-bottom: 1.5px solid rgba(0,245,255,.3);
+  transform: rotate(45deg);
+  animation: arrowBounce 1.8s ease infinite;
+}
+@keyframes arrowBounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(7px)} }
+
+/* ─── MAIN ─── */
+main { max-width: 1100px; margin: 0 auto; padding: 0 20px 100px; position: relative; z-index: 1; }
+
+/* ─── SECTIONS ─── */
+.sec { display: none; }
+.sec.on { display: block; animation: secIn .55s var(--ease) both; }
+@keyframes secIn { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+/* ─── SECTION HEADER ─── */
+.sh { text-align: center; padding: 80px 0 48px; }
+.sh-eye {
+  font-family: var(--font-d); font-size: .56rem;
+  letter-spacing: 6px; text-transform: uppercase; margin-bottom: 13px;
+}
+.sh h2 {
+  font-family: var(--font-d);
+  font-size: clamp(1.8rem,5vw,3.4rem);
+  font-weight: 900; line-height: 1; margin-bottom: 15px;
+}
+.sh p {
+  max-width: 580px; margin: 0 auto;
+  color: rgba(226,240,255,.5); font-size: 1rem;
+  font-weight: 300; line-height: 1.8;
+}
+
+/* ─── NEON TEXT UTILS ─── */
+.nc{color:var(--cyan);   text-shadow:0 0 14px rgba(0,245,255,.55);}
+.nm{color:var(--magenta);text-shadow:0 0 14px rgba(255,0,229,.55);}
+.nl{color:var(--lime);   text-shadow:0 0 14px rgba(170,255,0,.55);}
+.no{color:var(--orange); text-shadow:0 0 14px rgba(255,107,0,.55);}
+.nv{color:var(--violet); text-shadow:0 0 14px rgba(155,0,255,.55);}
+
+/* ─── DIVIDER ─── */
+.divider {
+  height: 1px; margin: 28px 0; opacity: .35;
+  background: linear-gradient(90deg,
+    transparent, var(--cyan) 20%, var(--magenta) 50%, var(--lime) 80%, transparent);
+}
+
+/* ─── BANNER ─── */
+.banner {
+  width: 100%; border-radius: 18px; overflow: hidden;
+  position: relative; margin-bottom: 38px;
+}
+.banner img {
+  width: 100%; max-height: 370px; object-fit: cover;
+  filter: saturate(1.3) contrast(1.05); display: block;
+  transition: transform .6s ease;
+}
+.banner:hover img { transform: scale(1.03); }
+.bov {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,.85) 0%,transparent 65%);
+  display: flex; flex-direction: column;
+  justify-content: center; padding: 40px;
+}
+.bov h3 {
+  font-family: var(--font-d);
+  font-size: clamp(1.3rem,3vw,2.1rem);
+  font-weight: 900; line-height: 1.1; margin-bottom: 12px;
+}
+.bov p { color:rgba(226,240,255,.6); max-width:360px; font-size:.93rem; line-height:1.65; font-weight:300; }
+
+/* ─── CARD GRID ─── */
+.cg { display: grid; grid-template-columns: repeat(auto-fill,minmax(285px,1fr)); gap: 18px; margin-bottom: 38px; }
+.card {
+  background: var(--panel); border-radius: 14px;
+  overflow: hidden; border: 1px solid rgba(255,255,255,.04);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease); cursor: pointer;
+}
+.card-tw { overflow: hidden; height: 185px; }
+.card-th { width:100%; height:185px; object-fit:cover; filter:saturate(1.2); display:block; transition:transform .5s,filter .4s; }
+.card:hover .card-th { transform:scale(1.07); filter:saturate(1.6); }
+.card-bd { padding: 18px 20px 22px; }
+.card-eye { font-family:var(--font-d); font-size:.47rem; letter-spacing:3px; text-transform:uppercase; margin-bottom:7px; }
+.card h3 { font-family:var(--font-d); font-size:.95rem; font-weight:700; margin-bottom:9px; line-height:1.2; }
+.card p { font-size:.87rem; color:rgba(226,240,255,.5); line-height:1.65; font-weight:300; }
+.cc{border-top:2px solid var(--cyan);   }.cc .card-eye,.cc h3{color:var(--cyan);}   .cc:hover{box-shadow:0 12px 38px rgba(0,245,255,.12);  transform:translateY(-5px);}
+.cm{border-top:2px solid var(--magenta);}.cm .card-eye,.cm h3{color:var(--magenta);}.cm:hover{box-shadow:0 12px 38px rgba(255,0,229,.12);  transform:translateY(-5px);}
+.cl{border-top:2px solid var(--lime);   }.cl .card-eye,.cl h3{color:var(--lime);}   .cl:hover{box-shadow:0 12px 38px rgba(170,255,0,.12);  transform:translateY(-5px);}
+.co{border-top:2px solid var(--orange); }.co .card-eye,.co h3{color:var(--orange);} .co:hover{box-shadow:0 12px 38px rgba(255,107,0,.12);  transform:translateY(-5px);}
+.cv{border-top:2px solid var(--violet); }.cv .card-eye,.cv h3{color:var(--violet);} .cv:hover{box-shadow:0 12px 38px rgba(155,0,255,.12);  transform:translateY(-5px);}
+
+/* ─── SPLIT ─── */
+.split { display:grid; grid-template-columns:1fr 1fr; gap:34px; align-items:center; margin-bottom:46px; }
+@media(max-width:680px){.split{grid-template-columns:1fr;}}
+.simg { border-radius:16px; overflow:hidden; position:relative; }
+.simg img { width:100%; display:block; filter:saturate(1.3); transition:transform .5s; }
+.simg:hover img { transform:scale(1.04); }
+.icap {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:26px 16px 10px;
+  background:linear-gradient(transparent,rgba(0,0,0,.9));
+  font-family:var(--font-d); font-size:.48rem; letter-spacing:2.5px; text-transform:uppercase;
+}
+.stxt h3 { font-family:var(--font-d); font-size:1.45rem; font-weight:700; margin-bottom:15px; line-height:1.2; }
+.stxt p { color:rgba(226,240,255,.55); font-size:.93rem; line-height:1.8; font-weight:300; margin-bottom:11px; }
+.tag {
+  display:inline-block; font-family:var(--font-d);
+  font-size:.47rem; letter-spacing:3px; padding:5px 12px;
+  border-radius:3px; border:1px solid; margin-bottom:13px; text-transform:uppercase;
+}
+
+/* ─── GALLERY 3 ─── */
+.g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:13px; margin:18px 0 38px; }
+.g3 .simg { margin:0; }
+.g3 .simg img { height:195px; object-fit:cover; }
+@media(max-width:580px){.g3{grid-template-columns:1fr 1fr;}}
+
+/* ─── LEVELS ─── */
+.lvls { display:grid; grid-template-columns:repeat(auto-fill,minmax(245px,1fr)); gap:16px; margin-bottom:38px; }
+.lcard {
+  background:var(--panel); border-radius:14px; padding:24px;
+  border-left:3px solid; transition:transform .3s var(--ease);
+  cursor:pointer; position:relative; overflow:hidden;
+}
+.lcard::before {
+  content:''; position:absolute; top:-20px; right:-20px;
+  width:80px; height:80px; border-radius:50%; background:currentColor;
+  opacity:.03; transition:transform .4s, opacity .4s;
+}
+.lcard:hover::before { transform:scale(1.8); opacity:.06; }
+.lcard:hover { transform:translateY(-4px); }
+.lnum { font-family:var(--font-d); font-size:.52rem; letter-spacing:4px; margin-bottom:7px; text-transform:uppercase; }
+.lcard h4 { font-family:var(--font-d); font-size:1.05rem; margin-bottom:9px; }
+.lcard p { font-size:.86rem; color:rgba(226,240,255,.5); line-height:1.65; font-weight:300; }
+.licon { font-size:1.9rem; margin-bottom:11px; display:block; }
+
+/* ─── TABLE ─── */
+.twrap { background:var(--panel); border-radius:16px; overflow:hidden; border:1px solid rgba(255,107,0,.08); margin-bottom:38px; }
+.ntable { width:100%; border-collapse:collapse; }
+.ntable th { padding:13px 16px; font-family:var(--font-d); font-size:.48rem; letter-spacing:3px; text-transform:uppercase; text-align:left; background:rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.06); }
+.ntable td { padding:13px 16px; font-size:.87rem; color:rgba(226,240,255,.55); border-bottom:1px solid rgba(255,255,255,.03); font-weight:300; line-height:1.5; transition:background .2s; }
+.ntable tr:last-child td { border-bottom:none; }
+.ntable tr:hover td { background:rgba(255,255,255,.02); }
+
+/* ─── FUNC GRID ─── */
+.fg { display:grid; grid-template-columns:repeat(auto-fill,minmax(205px,1fr)); gap:15px; margin-bottom:38px; }
+.fc {
+  background:var(--panel); border-radius:14px; padding:24px 18px;
+  text-align:center; border:1px solid rgba(255,255,255,.04);
+  transition:transform .3s var(--ease), box-shadow .3s; cursor:pointer;
+}
+.fc:hover { transform:scale(1.04); }
+.fci { font-size:2.1rem; margin-bottom:11px; display:block; }
+.fc h4 { font-family:var(--font-d); font-size:.8rem; margin-bottom:9px; font-weight:700; }
+.fc p { font-size:.83rem; color:rgba(226,240,255,.48); line-height:1.6; font-weight:300; }
+.fc:nth-child(1){border-top:2px solid var(--cyan);   }.fc:nth-child(1) h4{color:var(--cyan);}   .fc:nth-child(1):hover{box-shadow:0 8px 26px rgba(0,245,255,.12);}
+.fc:nth-child(2){border-top:2px solid var(--magenta);}.fc:nth-child(2) h4{color:var(--magenta);}.fc:nth-child(2):hover{box-shadow:0 8px 26px rgba(255,0,229,.12);}
+.fc:nth-child(3){border-top:2px solid var(--lime);   }.fc:nth-child(3) h4{color:var(--lime);}   .fc:nth-child(3):hover{box-shadow:0 8px 26px rgba(170,255,0,.12);}
+.fc:nth-child(4){border-top:2px solid var(--orange); }.fc:nth-child(4) h4{color:var(--orange);} .fc:nth-child(4):hover{box-shadow:0 8px 26px rgba(255,107,0,.12);}
+.fc:nth-child(5){border-top:2px solid var(--violet); }.fc:nth-child(5) h4{color:var(--violet);} .fc:nth-child(5):hover{box-shadow:0 8px 26px rgba(155,0,255,.12);}
+.fc:nth-child(6){border-top:2px solid var(--cyan);   }.fc:nth-child(6) h4{color:var(--cyan);}
+.fc:nth-child(7){border-top:2px solid var(--magenta);}.fc:nth-child(7) h4{color:var(--magenta);}
+.fc:nth-child(8){border-top:2px solid var(--lime);   }.fc:nth-child(8) h4{color:var(--lime);}
+
+/* ─── STATS ─── */
+.stats {
+  border-radius:18px; padding:46px 38px;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(135px,1fr));
+  gap:26px; text-align:center; background:var(--panel);
+  border:1px solid rgba(0,245,255,.07);
+  position:relative; overflow:hidden; margin-top:38px;
+}
+.stats::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse at center, rgba(0,245,255,.03) 0%,transparent 70%);
+}
+.snum {
+  font-family:var(--font-d); font-size:2.4rem;
+  font-weight:900; line-height:1; position:relative;
+  transition:text-shadow .3s;
+}
+.snum:hover { text-shadow: 0 0 40px currentColor !important; }
+.slbl {
+  font-family:var(--font-d); font-size:.48rem; letter-spacing:3px;
+  text-transform:uppercase; color:rgba(226,240,255,.32); margin-top:7px;
+}
+
+/* ─── PROGRESS BARS ─── */
+.prow { margin-bottom:16px; }
+.plbl {
+  display:flex; justify-content:space-between;
+  font-family:var(--font-d); font-size:.52rem;
+  letter-spacing:2px; margin-bottom:5px; text-transform:uppercase;
+}
+.ptrack { height:4px; background:rgba(255,255,255,.05); border-radius:4px; overflow:hidden; }
+.pfill { height:100%; border-radius:4px; width:0%; transition:width 1.6s var(--ease); }
+
+/* ─── ACCORDION ─── */
+.acc { margin-bottom:38px; }
+.ai { border-bottom:1px solid rgba(255,255,255,.05); }
+.ab {
+  width:100%; background:none; border:none;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 0; cursor:pointer;
+  font-family:var(--font-d); font-size:.82rem; letter-spacing:1px;
+  text-transform:uppercase; color:var(--white); transition:color .2s;
+}
+.ab:hover { color:var(--cyan); }
+.ai.open .ab { color:var(--cyan); }
+.aarr { font-size:.7rem; color:var(--cyan); transition:transform .3s ease; }
+.ai.open .aarr { transform:rotate(180deg); }
+.abody { max-height:0; overflow:hidden; transition:max-height .4s var(--ease); }
+.abinner { padding:0 0 18px; color:rgba(226,240,255,.55); font-size:.9rem; line-height:1.75; font-weight:300; }
+
+/* ─── MODAL ─── */
+#modal {
+  position:fixed; inset:0; z-index:9990;
+  background:rgba(3,6,8,.88); backdrop-filter:blur(22px);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity .3s ease;
+}
+#modal.open { opacity:1; pointer-events:all; }
+.mbox {
+  background:var(--panel); border-radius:20px;
+  border:1px solid var(--border); max-width:580px;
+  width:90%; padding:38px; position:relative;
+  transform:scale(.9) translateY(18px);
+  transition:transform .3s ease;
+  max-height:80vh; overflow-y:auto;
+}
+#modal.open .mbox { transform:scale(1) translateY(0); }
+.mclose {
+  position:absolute; top:14px; right:14px;
+  background:transparent; border:1px solid rgba(255,255,255,.14);
+  color:var(--white); border-radius:50%;
+  width:30px; height:30px; cursor:pointer;
+  font-size:.95rem; transition:all .2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.mclose:hover { background:var(--magenta); border-color:var(--magenta); box-shadow:var(--glow-m); }
+.mtitle { font-family:var(--font-d); font-size:1.45rem; font-weight:700; margin-bottom:14px; line-height:1.2; }
+.mimg { width:100%; border-radius:10px; margin-bottom:14px; object-fit:cover; max-height:200px; display:block; }
+.mbody { color:rgba(226,240,255,.6); font-size:.9rem; line-height:1.8; font-weight:300; }
+
+/* ─── QBOX ─── */
+.qbox { background:var(--panel); border-radius:14px; padding:24px 28px; border-left:3px solid; margin:20px 0; }
+.qbox p { font-size:1rem; font-style:italic; color:rgba(226,240,255,.7); line-height:1.75; font-weight:300; }
+.qbox cite { display:block; margin-top:9px; font-family:var(--font-d); font-size:.48rem; letter-spacing:3px; text-transform:uppercase; }
+
+/* ─── REVEAL ANIMATION ─── */
+.reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease,transform .7s ease; }
+.reveal.in { opacity:1; transform:translateY(0); }
+
+/* ─── FOOTER ─── */
+footer {
+  text-align:center; padding:28px 20px;
+  font-family:var(--font-d); font-size:.48rem; letter-spacing:4px;
+  color:rgba(226,240,255,.16); border-top:1px solid rgba(255,255,255,.03);
+}
+footer span { color:var(--cyan); }
+
+/* ─── MISC ─── */
+@keyframes pulseGlow {
+  0%,100%{text-shadow:var(--glow-c);}
+  50%{text-shadow:0 0 40px var(--cyan),0 0 80px var(--cyan),0 0 120px var(--cyan);}
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(26px)} to{opacity:1;transform:translateY(0)} }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  nav{padding:11px 14px;}
+  .nbtn{padding:6px 9px;font-size:.42rem;}
+  .hero-title{font-size:clamp(3.2rem,18vw,5.5rem);}
+  .stats{padding:28px 18px;}
+  .bov{padding:22px;}
+}
+@media(max-width:480px){
+  .logo{font-size:.85rem;}
+  .g3{grid-template-columns:1fr 1fr;}
+  .nav-btns{gap:4px;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<!-- PARTICLES CANVAS -->
+<canvas id="pcv"></canvas>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-title">ANATOMÍA</div>
+  <div class="ld-track"><div class="ld-fill"></div></div>
+  <div class="ld-pct">0%</div>
+</div>
+
+<!-- MODAL -->
+<div id="modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <h2 id="mtitle" class="mtitle nc"></h2>
+    <img id="mimg" class="mimg" src="" alt="">
+    <div id="mbody" class="mbody"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">ANAT<em>O</em>MÍA</div>
+  <div class="nav-btns">
+    <button class="nbtn nbtn-c" onclick="showSection('tipos')">⬡ Tipos</button>
+    <button class="nbtn nbtn-m" onclick="showSection('que-es')">◈ Qué Significa</button>
+    <button class="nbtn nbtn-l" onclick="showSection('como-es')">◉ Cómo Es</button>
+    <button class="nbtn nbtn-o" onclick="showSection('dif')">⊕ Diferencias</button>
+    <button class="nbtn nbtn-v" onclick="showSection('func')">⚡ Función</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="grid-lines"></div>
+  <div class="eyebrow">// Ciencias de la Vida · Medicina · Biología Humana //</div>
+  <h1 class="hero-title">
+    <span class="t1">ANA</span><span class="t2">TO</span><span class="t3">MÍ</span><span class="t4">A</span>
+  </h1>
+  <p class="hero-sub">El estudio científico de la estructura del cuerpo humano. Descubre cada capa, sistema y secreto de la máquina biológica más perfecta del universo conocido.</p>
+  <div class="typing"><span id="typing-text"></span><span class="tcaret"></span></div>
+  <div class="hero-imgs">
+    <div class="hframe hfc">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Gray728.svg/220px-Gray728.svg.png" alt="Esqueleto">
+      <div class="flabel nc">Esqueleto</div>
+    </div>
+    <div class="hframe hfm">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Heart_left_external_view.jpg/220px-Heart_left_external_view.jpg" alt="Corazón">
+      <div class="flabel nm">Corazón</div>
+    </div>
+    <div class="hframe hfl">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Blausen_0657_MultipolarNeuron.png/220px-Blausen_0657_MultipolarNeuron.png" alt="Neurona">
+      <div class="flabel nl">Neurona</div>
+    </div>
+    <div class="hframe hfo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Lateral_head_anatom_planes-en.svg/220px-Lateral_head_anatom_planes-en.svg.png" alt="Planos">
+      <div class="flabel no">Planos</div>
+    </div>
+    <div class="hframe hfv">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Da_Vinci_Vitruve_Luc_Viatour.jpg/220px-Da_Vinci_Vitruve_Luc_Viatour.jpg" alt="Vitruvio">
+      <div class="flabel nv">Da Vinci</div>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="sarrow"></div>Descubrir</div>
+</section>
+
+<main>
+
+<!-- ══ TIPOS ══ -->
+<div id="tipos" class="sec">
+  <div class="sh">
+    <div class="sh-eye nc">// Clasificación //</div>
+    <h2 class="nc">Tipos de Anatomía</h2>
+    <p>La disciplina se ramifica en múltiples especialidades. <em>Haz clic en cada tarjeta para más información.</em></p>
+  </div>
+  <div class="banner reveal">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Vesalius_Fabrica_p163.jpg/900px-Vesalius_Fabrica_p163.jpg" alt="Vesalio">
+    <div class="bov">
+      <h3 class="nc">De Humani<br>Corporis Fabrica</h3>
+      <p>El atlas anatómico de Vesalio (1543) revolucionó para siempre la comprensión del cuerpo humano.</p>
+    </div>
+  </div>
+  <div class="cg">
+    <div class="card cc reveal" data-modal="macro">
+      <div class="card-tw"><img class="card-th" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Gray728.svg/400px-Gray728.svg.png" alt="Macroscópica"></div>
+      <div class="card-bd"><div class="card-eye">Rama Fundamental</div><h3>Anatomía Macroscópica</h3><p>Estructuras visibles a simple vista: huesos, músculos, órganos. ↗ Clic para más info.</p></div>
+    </div>
+    <div class="card cm reveal" data-modal="micro">
+      <div class="card-tw"><img class="card-th" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Blausen_0657_MultipolarNeuron.png/400px-Blausen_0657_MultipolarNeuron.png" alt="Microscópica"></div>
+      <div class="card-bd"><div class="card-eye">Nivel Celular</div><h3>Anatomía Microscópica</h3><p>Examina tejidos y células con microscopio. Incluye histología y citología.</p></div>
+    </div>
+    <div class="card cl reveal" data-modal="embrio">
+      <div class="card-tw"><img class="card-th" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Embryo_at_14_weeks_profile.JPG/400px-Embryo_at_14_weeks_profile.JPG" alt="Embriología"></div>
+      <div class="card-bd"><div class="card-eye">Del Desarrollo</div><h3>Anatomía Embriológica</h3><p>Cambios estructurales desde la concepción hasta el nacimiento.</p></div>
+    </div>
+    <div class="card co reveal" data-modal="regional">
+      <div class="card-tw"><img class="card-th" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Lateral_head_anatom_planes-en.svg/400px-Lateral_head_anatom_planes-en.svg.png" alt="Regional"></div>
+      <div class="card-bd"><div class="card-eye">Especialización</div><h3>Anatomía Regional</h3><p>Cabeza, cuello, tórax, abdomen, pelvis y extremidades.</p></div>
+    </div>
+    <div class="card cv reveal" data-modal="clinica">
+      <div class="card-tw"><img class="card-th" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Blausen_0029_AnatomicalPosition-Planes.png/400px-Blausen_0029_AnatomicalPosition-Planes.png" alt="Clínica"></div>
+      <div class="card-bd"><div class="card-eye">Tecnología Médica</div><h3>Anatomía Clínica</h3><p>Diagnóstico por imagen: radiografías, resonancias magnéticas, tomografías.</p></div>
+    </div>
+    <div class="card cc reveal" data-modal="forense">
+      <div class="card-tw"><img class="card-th" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Gray447.png/400px-Gray447.png" alt="Forense"></div>
+      <div class="card-bd"><div class="card-eye">Ciencias Forenses</div><h3>Anatomía Forense</h3><p>Identificación de restos humanos y peritaje en contextos legales.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ QUÉ SIGNIFICA ══ -->
+<div id="que-es" class="sec">
+  <div class="sh">
+    <div class="sh-eye nm">// Definición & Historia //</div>
+    <h2 class="nm">¿Qué Significa?</h2>
+    <p>Una palabra griega que esconde siglos de descubrimientos y el coraje de mirar dentro del cuerpo humano.</p>
+  </div>
+  <div class="split reveal">
+    <div class="simg">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Vesalius_Fabrica_p163.jpg/500px-Vesalius_Fabrica_p163.jpg" alt="Vesalio">
+      <div class="icap nm">Vesalio · De Humani Corporis Fabrica · 1543</div>
+    </div>
+    <div class="stxt">
+      <div class="tag" style="border-color:var(--cyan);color:var(--cyan)">Griego Antiguo · Siglo IV a.C.</div>
+      <h3 class="nm">Anatomē — Cortar a Través</h3>
+      <p>Del griego <em>"ana"</em> (a través) + <em>"temnein"</em> (cortar). Literalmente <strong style="color:#fff">disecar o cortar a través</strong>.</p>
+      <p>Esta etimología refleja la práctica histórica de diseccionar cadáveres para revelar la arquitectura interna del cuerpo humano.</p>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="split reveal">
+    <div class="stxt">
+      <div class="tag" style="border-color:var(--magenta);color:var(--magenta)">Historia · Línea del Tiempo</div>
+      <h3 class="nc">De Hipócrates a Hoy</h3>
+      <p><span class="nc">Hipócrates</span> (~460 a.C.) separó la medicina de la superstición.</p>
+      <p><span class="nm">Galeno</span> (129–216 d.C.) sistematizó el conocimiento durante siglos.</p>
+      <p><span class="nl">Andreas Vesalio</span> (1514–1564) revolucionó la anatomía con disecciones humanas reales.</p>
+    </div>
+    <div class="simg">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Galen_bloodletting.jpg/500px-Galen_bloodletting.jpg" alt="Historia">
+      <div class="icap nl">Historia de la Medicina Clásica</div>
+    </div>
+  </div>
+  <div class="qbox reveal" style="border-color:var(--magenta)">
+    <p>"El cuerpo humano es el mejor cuadro de obra que existe."</p>
+    <cite class="nm">— Leonardo da Vinci · Anatomista y Artista · Siglo XV</cite>
+  </div>
+  <div class="acc reveal">
+    <div class="ai">
+      <button class="ab">¿Por qué es importante estudiar anatomía? <span class="aarr">▼</span></button>
+      <div class="abody"><div class="abinner">La anatomía es la base de toda la medicina. Sin comprender la estructura normal del cuerpo es imposible diagnosticar enfermedades, realizar cirugías o administrar tratamientos. Es literalmente el lenguaje universal de la salud.</div></div>
+    </div>
+    <div class="ai">
+      <button class="ab">¿Cuánto tiempo lleva estudiar anatomía completa? <span class="aarr">▼</span></button>
+      <div class="abody"><div class="abinner">Los estudiantes de medicina dedican aproximadamente 2 años al estudio formal de la anatomía. Sin embargo, los especialistas continúan profundizando en su área anatómica durante toda su carrera profesional.</div></div>
+    </div>
+    <div class="ai">
+      <button class="ab">¿Cómo se estudia anatomía hoy en día? <span class="aarr">▼</span></button>
+      <div class="abody"><div class="abinner">Los métodos modernos incluyen: disección de cadáveres, modelos 3D impresos, realidad virtual e inteligencia artificial. Las resonancias magnéticas y tomografías permiten estudiar anatomía en vivo con detalle sin precedentes.</div></div>
+    </div>
+    <div class="ai">
+      <button class="ab">¿Existen diferencias anatómicas entre sexos? <span class="aarr">▼</span></button>
+      <div class="abody"><div class="abinner">Sí. Hay diferencias en el sistema reproductor, distribución de tejido graso, densidad ósea y proporción de masa muscular. Sin embargo, la arquitectura de los demás sistemas es esencialmente igual.</div></div>
+    </div>
+  </div>
+  <div class="g3 reveal">
+    <div class="simg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Da_Vinci_Vitruve_Luc_Viatour.jpg/400px-Da_Vinci_Vitruve_Luc_Viatour.jpg" alt="Vitruvio"><div class="icap nc">Da Vinci · Hombre de Vitruvio</div></div>
+    <div class="simg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Vesalius_Fabrica_p163.jpg/400px-Vesalius_Fabrica_p163.jpg" alt="Vesalio músculos"><div class="icap nm">Vesalio · Músculos · 1543</div></div>
+    <div class="simg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Gray1232.png/400px-Gray1232.png" alt="Gray's Anatomy"><div class="icap nl">Gray's Anatomy · 1858</div></div>
+  </div>
+</div>
+
+<!-- ══ CÓMO ES ══ -->
+<div id="como-es" class="sec">
+  <div class="sh">
+    <div class="sh-eye nl">// Estructura //</div>
+    <h2 class="nl">¿Cómo es la Anatomía?</h2>
+    <p>Seis niveles de organización, desde los átomos hasta el organismo completo.</p>
+  </div>
+  <div class="banner reveal">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Male_anatomy.png/500px-Male_anatomy.png" alt="Cuerpo" style="object-position:top;max-height:440px">
+    <div class="bov"><h3 class="nl">Organización<br>del Cuerpo</h3><p>6 niveles de complejidad — del átomo al organismo.</p></div>
+  </div>
+  <div class="lvls">
+    <div class="lcard reveal" style="border-color:var(--cyan)"><span class="licon">⚛️</span><div class="lnum nc">Nivel 01</div><h4 class="nc">Nivel Químico</h4><p>Átomos y moléculas: carbono, hidrógeno, oxígeno, nitrógeno. Proteínas y ácidos nucleicos como base de la vida.</p></div>
+    <div class="lcard reveal" style="border-color:var(--magenta)"><span class="licon">🔬</span><div class="lnum nm">Nivel 02</div><h4 class="nm">Nivel Celular</h4><p>El cuerpo tiene ~<strong style="color:#fff">37 billones</strong> de células de más de 200 tipos distintos y especializados.</p></div>
+    <div class="lcard reveal" style="border-color:var(--lime)"><span class="licon">🧱</span><div class="lnum nl">Nivel 03</div><h4 class="nl">Tejidos</h4><p>Epitelial, conectivo, muscular y nervioso. Cada tejido tiene estructura y función específica.</p></div>
+    <div class="lcard reveal" style="border-color:var(--orange)"><span class="licon">🫀</span><div class="lnum no">Nivel 04</div><h4 class="no">Órganos</h4><p>Corazón, pulmones, hígado, cerebro y riñones — dos o más tejidos que realizan funciones vitales.</p></div>
+    <div class="lcard reveal" style="border-color:var(--violet)"><span class="licon">⚙️</span><div class="lnum nv">Nivel 05</div><h4 class="nv">Sistemas</h4><p>11 sistemas que trabajan coordinados: circulatorio, nervioso, respiratorio, digestivo, inmune y más.</p></div>
+    <div class="lcard reveal" style="border-color:var(--cyan)"><span class="licon">🧍</span><div class="lnum nc">Nivel 06</div><h4 class="nc">Organismo</h4><p>El ser humano como unidad funcional integrada, manteniendo la <em>homeostasis</em> constantemente.</p></div>
+  </div>
+  <div class="split reveal">
+    <div class="stxt">
+      <div class="tag" style="border-color:var(--lime);color:var(--lime)">Sistema Nervioso</div>
+      <h3 class="nc">El Cerebro Humano</h3>
+      <p>Con <span class="nc">86 mil millones de neuronas</span> y hasta 100 billones de conexiones — más que estrellas en la Vía Láctea.</p>
+      <p>Consume el <span class="nm">20% de la energía</span> corporal a pesar de pesar solo ~1.4 kg. El órgano más complejo del universo conocido.</p>
+    </div>
+    <div class="simg">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Blausen_0657_MultipolarNeuron.png/500px-Blausen_0657_MultipolarNeuron.png" alt="Neurona">
+      <div class="icap nc">Neurona — Célula del Sistema Nervioso</div>
+    </div>
+  </div>
+  <div class="split reveal">
+    <div class="simg">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Heart_left_external_view.jpg/500px-Heart_left_external_view.jpg" alt="Corazón">
+      <div class="icap nm">Corazón — El Motor del Cuerpo</div>
+    </div>
+    <div class="stxt">
+      <div class="tag" style="border-color:var(--magenta);color:var(--magenta)">Sistema Circulatorio</div>
+      <h3 class="nm">El Corazón Humano</h3>
+      <p>Bombea ~<span class="nm">5 litros/minuto</span> y late unas 100,000 veces al día — más de 3 mil millones de latidos en una vida.</p>
+      <p>Los vasos sanguíneos alineados cubrirían <strong style="color:#fff">más de 100,000 km</strong> — suficiente para rodear la Tierra 2.5 veces.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DIFERENCIAS ══ -->
+<div id="dif" class="sec">
+  <div class="sh">
+    <div class="sh-eye no">// Comparativa //</div>
+    <h2 class="no">Diferencias con Otras Anatomías</h2>
+    <p>La anatomía humana frente a sus disciplinas hermanas.</p>
+  </div>
+  <div class="g3 reveal">
+    <div class="simg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Gray728.svg/400px-Gray728.svg.png" alt="Humana" style="height:210px;object-fit:contain;background:#0c1520"><div class="icap nc">Anatomía Humana</div></div>
+    <div class="simg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Dog_anatomy_lateral_skeleton_view.jpg/400px-Dog_anatomy_lateral_skeleton_view.jpg" alt="Animal"><div class="icap nm">Anatomía Veterinaria</div></div>
+    <div class="simg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Botany_-_Ernst_Haeckel_-_1904_-_Plate_100.jpg/400px-Botany_-_Ernst_Haeckel_-_1904_-_Plate_100.jpg" alt="Vegetal"><div class="icap nl">Anatomía Vegetal</div></div>
+  </div>
+  <div class="twrap reveal">
+    <table class="ntable">
+      <thead>
+        <tr>
+          <th style="color:var(--orange)">Tipo</th>
+          <th style="color:var(--cyan)">Objeto de Estudio</th>
+          <th style="color:var(--magenta)">Método Principal</th>
+          <th style="color:var(--lime)">Aplicación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong style="color:#fff">🧍 Humana</strong></td><td>Cuerpo humano en todas las etapas</td><td>Disección, imagen médica, atlas</td><td>Medicina, cirugía, fisioterapia</td></tr>
+        <tr><td><strong style="color:#fff">🐕 Veterinaria</strong></td><td>Animales domésticos y de granja</td><td>Disección comparada, radiografías</td><td>Veterinaria, ganadería, zoología</td></tr>
+        <tr><td><strong style="color:#fff">🌿 Vegetal</strong></td><td>Plantas: raíz, tallo, hoja, flor</td><td>Microscopía, cortes histológicos</td><td>Botánica, agronomía, farmacología</td></tr>
+        <tr><td><strong style="color:#fff">🦎 Comparada</strong></td><td>Estructuras en diferentes especies</td><td>Comparación taxonómica</td><td>Evolución, paleontología, biología</td></tr>
+        <tr><td><strong style="color:#fff">🦕 Paleontológica</strong></td><td>Organismos extintos (fósiles)</td><td>Análisis de fósiles, reconstrucción 3D</td><td>Paleontología, arqueología</td></tr>
+        <tr><td><strong style="color:#fff">⚖️ Forense</strong></td><td>Restos humanos en contexto legal</td><td>Análisis óseo, ADN forense</td><td>Criminología, medicina legal</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="split reveal">
+    <div class="simg">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/The_fossil_bed_at_Dinosaur_National_Monument.jpg/500px-The_fossil_bed_at_Dinosaur_National_Monument.jpg" alt="Paleontología">
+      <div class="icap no">Anatomía Paleontológica — Estudio de Fósiles</div>
+    </div>
+    <div class="stxt">
+      <div class="tag" style="border-color:var(--orange);color:var(--orange)">Diferencia Clave</div>
+      <h3 class="no">Lo Que Hace Única a la Humana</h3>
+      <p>Única por la <span class="no">bipedestación</span>, volumen cerebral (~1,400 cm³), pulgar oponible y laringe para el lenguaje articulado.</p>
+      <p>Compartimos el <span class="nc">99% del ADN con chimpancés</span> — y sin embargo somos morfológicamente distintos de manera sorprendente.</p>
+      <p>La anatomía vegetal es radicalmente diferente: <strong style="color:#fff">pared celular de celulosa</strong> y <strong style="color:#fff">cloroplastos</strong> — estructuras inexistentes en animales.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FUNCIÓN ══ -->
+<div id="func" class="sec">
+  <div class="sh">
+    <div class="sh-eye nv">// Propósito //</div>
+    <h2 class="nv">Función de la Anatomía</h2>
+    <p>La anatomía no es solo descripción. Es el cimiento sobre el que se construye toda la ciencia médica moderna.</p>
+  </div>
+  <div class="banner reveal">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Heart_left_external_view.jpg/900px-Heart_left_external_view.jpg" alt="Corazón" style="filter:saturate(.7) brightness(.6)">
+    <div class="bov" style="background:linear-gradient(90deg,rgba(0,0,0,.9)0%,rgba(0,0,0,.3)100%)">
+      <h3 class="nv">La Anatomía<br>Salva Vidas</h3>
+      <p>Sin conocimiento anatómico no existirían la cirugía moderna ni los trasplantes de órganos.</p>
+    </div>
+  </div>
+  <div class="fg">
+    <div class="fc reveal"><span class="fci">🏥</span><h4>Diagnóstico</h4><p>Identificar enfermedades conociendo la posición y forma normal de cada estructura.</p></div>
+    <div class="fc reveal"><span class="fci">🔪</span><h4>Cirugía</h4><p>Los cirujanos dominan la anatomía regional para operar con precisión milimétrica.</p></div>
+    <div class="fc reveal"><span class="fci">💊</span><h4>Farmacología</h4><p>Entender cómo los fármacos actúan en tejidos y órganos específicos.</p></div>
+    <div class="fc reveal"><span class="fci">🏋️</span><h4>Fisioterapia</h4><p>Rehabilitación usando conocimiento de músculos, tendones y articulaciones.</p></div>
+    <div class="fc reveal"><span class="fci">🖼️</span><h4>Imagen Médica</h4><p>Radiología, resonancia y tomografía dependen del conocimiento anatómico.</p></div>
+    <div class="fc reveal"><span class="fci">🧪</span><h4>Investigación</h4><p>Biomedicina parte de la anatomía para desarrollar nuevas terapias y tecnologías.</p></div>
+    <div class="fc reveal"><span class="fci">🎓</span><h4>Educación</h4><p>Base de formación de médicos, enfermeros y odontólogos en todo el mundo.</p></div>
+    <div class="fc reveal"><span class="fci">🤸</span><h4>Deporte Élite</h4><p>Entrenadores aplican anatomía para optimizar rendimiento y prevenir lesiones.</p></div>
+  </div>
+  <!-- Progress Bars -->
+  <div style="background:var(--panel);border-radius:16px;padding:28px 26px;border:1px solid rgba(155,0,255,.1);margin-bottom:36px" class="reveal">
+    <h3 class="nv" style="font-family:'Orbitron',monospace;margin-bottom:20px;font-size:1.1rem">Relevancia por Campo Médico</h3>
+    <div class="prow"><div class="plbl"><span class="nc">Cirugía</span><span>97%</span></div><div class="ptrack"><div class="pfill" data-width="97" style="background:var(--cyan)"></div></div></div>
+    <div class="prow"><div class="plbl"><span class="nm">Diagnóstico por Imagen</span><span>94%</span></div><div class="ptrack"><div class="pfill" data-width="94" style="background:var(--magenta)"></div></div></div>
+    <div class="prow"><div class="plbl"><span class="nl">Fisioterapia</span><span>88%</span></div><div class="ptrack"><div class="pfill" data-width="88" style="background:var(--lime)"></div></div></div>
+    <div class="prow"><div class="plbl"><span class="no">Farmacología</span><span>82%</span></div><div class="ptrack"><div class="pfill" data-width="82" style="background:var(--orange)"></div></div></div>
+    <div class="prow" style="margin-bottom:0"><div class="plbl"><span class="nv">Medicina Forense</span><span>79%</span></div><div class="ptrack"><div class="pfill" data-width="79" style="background:var(--violet)"></div></div></div>
+  </div>
+  <div class="split reveal">
+    <div class="simg">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Thorax_contents.jpg/500px-Thorax_contents.jpg" alt="Tórax">
+      <div class="icap nv">Tórax — Corazón, Pulmones y Grandes Vasos</div>
+    </div>
+    <div class="stxt">
+      <div class="tag" style="border-color:var(--violet);color:var(--violet)">El Tórax</div>
+      <h3 class="nv">El Centro Vital</h3>
+      <p>Aloja los órganos más críticos para la vida: <span class="nv">corazón y pulmones</span>. Protegido por 12 pares de costillas, el esternón y la columna vertebral.</p>
+      <p>Los cirujanos cardiotorácicos realizan procedimientos increíblemente complejos en este espacio gracias al dominio preciso de la anatomía regional.</p>
+    </div>
+  </div>
+  <!-- Stats animados -->
+  <div class="stats reveal">
+    <div><div class="snum nc" data-count="206" data-suffix="">0</div><div class="slbl">Huesos</div></div>
+    <div><div class="snum nm" data-count="600" data-suffix="+">0</div><div class="slbl">Músculos</div></div>
+    <div><div class="snum nl" data-count="11" data-suffix="">0</div><div class="slbl">Sistemas</div></div>
+    <div><div class="snum no" data-count="86" data-suffix="B">0</div><div class="slbl">Neuronas</div></div>
+    <div><div class="snum nv" data-count="37" data-suffix="T">0</div><div class="slbl">Células</div></div>
+    <div><div class="snum nc" data-count="100" data-suffix="K km">0</div><div class="slbl">Vasos</div></div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  ANATOMÍA HUMANA &nbsp;<span>·</span>&nbsp;
+  <span>styles.css</span> &nbsp;·&nbsp;
+  <span>script.js</span> &nbsp;·&nbsp;
+  <span>index.html</span> &nbsp;·&nbsp; 2025
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   ANATOMÍA HUMANA  |  script.js
+   Loader · Particles · Cursor · Typing · Sections
+   Scroll Reveal · Counters · Accordion · Modal
+   Ripple · Glitch · Keyboard Nav
+═══════════════════════════════════════════════════ */
+
+'use strict';
+
+/* ── 1. LOADER ───────────────────────────────────── */
+(function() {
+  const fill = document.querySelector('.ld-fill');
+  const pct  = document.querySelector('.ld-pct');
+  let v = 0;
+  const t = setInterval(() => {
+    v += Math.random() * 14 + 4;
+    if (v >= 100) {
+      v = 100; clearInterval(t);
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('gone');
+        window.showSection('tipos', false);
+      }, 300);
+    }
+    fill.style.width = v + '%';
+    pct.textContent  = Math.floor(v) + '%';
+  }, 75);
+})();
+
+
+/* ── 2. PARTICLES ────────────────────────────────── */
+(function() {
+  const cv  = document.getElementById('pcv');
+  const ctx = cv.getContext('2d');
+  const C = ['#00F5FF','#FF00E5','#AAFF00','#FF6B00','#9B00FF'];
+  let W, H, pts = [];
+
+  function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  addEventListener('resize', resize); resize();
+
+  class P {
+    constructor() { this.init(); }
+    init() {
+      this.x  = Math.random()*W; this.y = Math.random()*H;
+      this.vx = (Math.random()-.5)*.4; this.vy = (Math.random()-.5)*.4;
+      this.r  = Math.random()*1.5+.5;
+      this.a  = Math.random()*.5+.1;
+      this.c  = C[Math.floor(Math.random()*C.length)];
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x<0||this.x>W||this.y<0||this.y>H) this.init();
+    }
+    draw() {
+      ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+      ctx.fillStyle = this.c; ctx.globalAlpha = this.a; ctx.fill();
+    }
+  }
+
+  for (let i=0;i<130;i++) pts.push(new P());
+
+  function lines() {
+    for (let i=0;i<pts.length;i++) {
+      for (let j=i+1;j<pts.length;j++) {
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if (d<85) {
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=pts[i].c; ctx.globalAlpha=(1-d/85)*.07;
+          ctx.lineWidth=.5; ctx.stroke();
+        }
+      }
+    }
+  }
+
+  (function loop() {
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{p.update();p.draw();});
+    lines(); ctx.globalAlpha=1;
+    requestAnimationFrame(loop);
+  })();
+})();
+
+
+/* ── 3. CUSTOM CURSOR ────────────────────────────── */
+(function() {
+  const dot  = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  if (!dot||!ring) return;
+  let mx=0,my=0,rx=0,ry=0;
+
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    dot.style.left=mx+'px'; dot.style.top=my+'px';
+  });
+  (function animRing() {
+    rx += (mx-rx)*.12; ry += (my-ry)*.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animRing);
+  })();
+
+  document.querySelectorAll('button,.card,.fc,.lcard,.hframe,.simg,.nbtn,.ab,.ai').forEach(el => {
+    el.addEventListener('mouseenter', ()=>document.body.classList.add('hov'));
+    el.addEventListener('mouseleave', ()=>document.body.classList.remove('hov'));
+  });
+})();
+
+
+/* ── 4. TYPING EFFECT ────────────────────────────── */
+(function() {
+  const el = document.getElementById('typing-text');
+  if (!el) return;
+  const phrases = [
+    'ESTRUCTURA DEL CUERPO HUMANO',
+    '206 HUESOS · 600+ MÚSCULOS',
+    '37 BILLONES DE CÉLULAS',
+    '86 MIL MILLONES DE NEURONAS',
+    'LA CIENCIA QUE SALVA VIDAS',
+    'SISTEMAS INTEGRADOS · HOMEOSTASIS',
+  ];
+  let pi=0,ci=0,del=false;
+  function tick() {
+    el.textContent = phrases[pi].slice(0,ci);
+    if (!del) {
+      ci++; if(ci>phrases[pi].length){del=true;setTimeout(tick,1500);return;}
+    } else {
+      ci--; if(ci===0){del=false;pi=(pi+1)%phrases.length;}
+    }
+    setTimeout(tick, del?42:78);
+  }
+  tick();
+})();
+
+
+/* ── 5. NAV SCROLL ───────────────────────────────── */
+window.addEventListener('scroll', ()=> {
+  document.querySelector('nav').classList.toggle('scrolled', scrollY>55);
+},{passive:true});
+
+
+/* ── 6. SECTIONS ─────────────────────────────────── */
+const SEC_BTN = {
+  tipos:'nbtn-c','que-es':'nbtn-m','como-es':'nbtn-l',dif:'nbtn-o',func:'nbtn-v'
+};
+
+window.showSection = function(id, scroll=true) {
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('act'));
+
+  const target = document.getElementById(id);
+  if (!target) return;
+  target.classList.add('on');
+  if (scroll) setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'start'}),60);
+
+  // Reveal inside
+  setTimeout(()=>revealIn(target), 100);
+  // Progress bars + counters for func section
+  if (id==='func') { setTimeout(animPBars,300); setTimeout(animCounters,450); }
+
+  const bc = SEC_BTN[id];
+  if (bc) document.querySelectorAll('.'+bc).forEach(b=>b.classList.add('act'));
+};
+
+
+/* ── 7. SCROLL REVEAL ────────────────────────────── */
+function revealIn(parent) {
+  parent.querySelectorAll('.reveal').forEach((el,i)=>{
+    setTimeout(()=>el.classList.add('in'), i*75);
+  });
+}
+
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('in'); revObs.unobserve(e.target);} });
+},{threshold:.12});
+
+function observeAll() {
+  document.querySelectorAll('.reveal:not(.in)').forEach(el=>revObs.observe(el));
+}
+
+
+/* ── 8. COUNTERS ─────────────────────────────────── */
+function animCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseFloat(el.dataset.count);
+    const suf = el.dataset.suffix||'';
+    const isFloat = target%1!==0;
+    const t0 = performance.now();
+    const dur = 1800;
+    (function step(now) {
+      const p = Math.min((now-t0)/dur,1);
+      const e = 1-Math.pow(1-p,3);
+      el.textContent = isFloat ? (e*target).toFixed(1)+suf : Math.floor(e*target)+suf;
+      if(p<1) requestAnimationFrame(step);
+    })(t0);
+  });
+}
+
+
+/* ── 9. PROGRESS BARS ────────────────────────────── */
+function animPBars() {
+  document.querySelectorAll('.pfill[data-width]').forEach(el => {
+    setTimeout(()=>{ el.style.width = el.dataset.width+'%'; },80);
+  });
+}
+
+
+/* ── 10. ACCORDION ───────────────────────────────── */
+(function() {
+  document.querySelectorAll('.ab').forEach(btn => {
+    btn.addEventListener('click', ()=>{
+      const item  = btn.closest('.ai');
+      const body  = item.querySelector('.abody');
+      const inner = item.querySelector('.abinner');
+      const wasOpen = item.classList.contains('open');
+
+      document.querySelectorAll('.ai.open').forEach(oi=>{
+        oi.classList.remove('open');
+        oi.querySelector('.abody').style.maxHeight='0';
+      });
+      if (!wasOpen) {
+        item.classList.add('open');
+        body.style.maxHeight = inner.scrollHeight+'px';
+      }
+    });
+  });
+})();
+
+
+/* ── 11. MODAL ───────────────────────────────────── */
+(function() {
+  const modal = document.getElementById('modal');
+  if (!modal) return;
+  document.querySelector('.mclose').addEventListener('click', closeModal);
+  modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+})();
+
+window.openModal = function(title, imgSrc, body, cls) {
+  const modal = document.getElementById('modal');
+  const t = document.getElementById('mtitle');
+  t.textContent = title;
+  t.className = 'mtitle '+(cls||'nc');
+  const img = document.getElementById('mimg');
+  img.src = imgSrc||''; img.style.display = imgSrc?'block':'none';
+  document.getElementById('mbody').innerHTML = body;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeModal = function() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+
+/* ── 12. CARD DATA + CLICK ───────────────────────── */
+const CARDS = {
+  macro:{
+    title:'Anatomía Macroscópica', cls:'nc',
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Gray728.svg/400px-Gray728.svg.png',
+    body:`<p>Estudia estructuras visibles a simple vista: <strong>huesos, músculos, órganos, nervios y vasos sanguíneos</strong>. Es la base de la cirugía y la medicina clínica.</p><br>
+          <p>Los médicos utilizan este conocimiento cada día para examinar pacientes, interpretar imágenes médicas y realizar procedimientos clínicos con precisión.</p>`
+  },
+  micro:{
+    title:'Anatomía Microscópica', cls:'nm',
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Blausen_0657_MultipolarNeuron.png/400px-Blausen_0657_MultipolarNeuron.png',
+    body:`<p>Requiere microscopio para observar <strong>tejidos y células</strong>. Se divide en <em>histología</em> (tejidos) y <em>citología</em> (células).</p><br>
+          <p>Esencial para el diagnóstico de enfermedades como el cáncer, donde los cambios son visibles únicamente a nivel celular.</p>`
+  },
+  embrio:{
+    title:'Anatomía Embriológica', cls:'nl',
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Embryo_at_14_weeks_profile.JPG/400px-Embryo_at_14_weeks_profile.JPG',
+    body:`<p>Estudia el desarrollo humano desde la fecundación hasta el nacimiento. En las primeras <strong>8 semanas</strong> se forman todos los órganos principales.</p><br>
+          <p>Permite identificar malformaciones congénitas y desarrollar tratamientos prenatales avanzados.</p>`
+  },
+  regional:{
+    title:'Anatomía Regional', cls:'co',
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Lateral_head_anatom_planes-en.svg/400px-Lateral_head_anatom_planes-en.svg.png',
+    body:`<p>Divide el cuerpo en zonas: <strong>cabeza, cuello, tórax, abdomen, pelvis y extremidades</strong>.</p><br>
+          <p>Es la base de la especialización médica. Cada especialista (cardiólogo, neurólogo, traumatólogo) domina profundamente su región anatómica.</p>`
+  },
+  clinica:{
+    title:'Anatomía Clínica', cls:'cv',
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Blausen_0029_AnatomicalPosition-Planes.png/400px-Blausen_0029_AnatomicalPosition-Planes.png',
+    body:`<p>Aplica el conocimiento anatómico al <strong>diagnóstico por imagen</strong>: radiografías, ecografías, resonancias magnéticas y tomografías.</p><br>
+          <p>Los radiólogos necesitan un conocimiento anatómico tridimensional perfecto para interpretar imágenes médicas con precisión diagnóstica.</p>`
+  },
+  forense:{
+    title:'Anatomía Forense', cls:'nc',
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Gray447.png/400px-Gray447.png',
+    body:`<p>Aplica conocimiento anatómico en contextos legales: <strong>identificación de restos, causa de muerte</strong> y peritaje judicial.</p><br>
+          <p>Los médicos forenses combinan anatomía, odontología y análisis de ADN para resolver casos criminales y identificar víctimas de desastres.</p>`
+  },
+};
+
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-modal]');
+  if (c && CARDS[c.dataset.modal]) {
+    const d = CARDS[c.dataset.modal];
+    openModal(d.title, d.img, d.body, d.cls);
+  }
+});
+
+
+/* ── 13. RIPPLE ──────────────────────────────────── */
+(function() {
+  const style = document.createElement('style');
+  style.textContent = `@keyframes ripple{to{transform:scale(3);opacity:0}}`;
+  document.head.appendChild(style);
+
+  document.querySelectorAll('.nbtn,.fc,.lcard,.card').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const r   = el.getBoundingClientRect();
+      const sp  = document.createElement('span');
+      const sz  = Math.max(r.width,r.height);
+      sp.style.cssText = `
+        position:absolute;pointer-events:none;
+        width:${sz}px;height:${sz}px;
+        left:${e.clientX-r.left-sz/2}px;
+        top:${e.clientY-r.top-sz/2}px;
+        background:rgba(255,255,255,.18);border-radius:50%;
+        transform:scale(0);animation:ripple .55s ease;
+      `;
+      el.style.position='relative';
+      el.style.overflow='hidden';
+      el.appendChild(sp);
+      sp.addEventListener('animationend',()=>sp.remove());
+    });
+  });
+})();
+
+
+/* ── 14. LOGO GLITCH ─────────────────────────────── */
+(function() {
+  const logo = document.querySelector('.logo');
+  if (!logo) return;
+  setInterval(()=>{
+    logo.style.textShadow='2px 0 var(--magenta),-2px 0 var(--cyan)';
+    setTimeout(()=>logo.style.textShadow='',110);
+  },4500);
+})();
+
+
+/* ── 15. KEYBOARD NAV ────────────────────────────── */
+(function() {
+  const order=['tipos','que-es','como-es','dif','func'];
+  let cur=0;
+  document.addEventListener('keydown', e=>{
+    if (e.key==='ArrowRight'||e.key==='ArrowDown') {
+      cur=(cur+1)%order.length; showSection(order[cur]);
+    } else if (e.key==='ArrowLeft'||e.key==='ArrowUp') {
+      cur=(cur-1+order.length)%order.length; showSection(order[cur]);
+    }
+  });
+})();
+
+
+/* ── 16. AUTO REVEAL ON SCROLL ───────────────────── */
+let autoShown = false;
+window.addEventListener('scroll', ()=>{
+  if (!autoShown && scrollY > innerHeight*.65) {
+    autoShown = true; showSection('tipos');
+  }
+  observeAll();
+},{passive:true});
+
+
+/* ── 17. IMG ERROR FALLBACK ──────────────────────── */
+document.querySelectorAll('img').forEach(img=>{
+  img.addEventListener('error', function(){
+    const emojis=['🦴','🫀','🧠','🫁','🔬','🧬','⚕️','💉'];
+    const bgs=['rgba(0,245,255,.08)','rgba(255,0,229,.08)','rgba(170,255,0,.08)',
+                'rgba(255,107,0,.08)','rgba(155,0,255,.08)'];
+    const emoji = emojis[Math.floor(Math.random()*emojis.length)];
+    const bg    = bgs[Math.floor(Math.random()*bgs.length)];
+    const h     = this.height||190;
+    const wrap  = this.closest('.simg,.card-tw,.hframe,.banner,.g3');
+    if (wrap) wrap.innerHTML =
+      `<div style="height:${h}px;background:${bg};display:flex;
+       align-items:center;justify-content:center;font-size:5rem;
+       border-radius:inherit">${emoji}</div>`;
+    else this.style.display='none';
+  });
+});
+
+
+/* ── 18. CONSOLE EASTER EGG ──────────────────────── */
+console.log('%c 🧬 ANATOMÍA HUMANA ','background:#00F5FF;color:#000;font-size:1.1rem;font-weight:bold;font-family:monospace;padding:8px 16px;border-radius:4px;');
+console.log('%c script.js · styles.css · index.html','color:#AAFF00;font-family:monospace;');
+console.log('%c ← → para navegar entre secciones','color:#FF00E5;font-family:monospace;');
+
+</script>
+</body>
+</html>
